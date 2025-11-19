@@ -1,0 +1,17 @@
+node_modules/
+dist/
+worklets/
+.env
+.env.local
+.DS_Store
+*.log
+coverage/
+.nyc_output/
+.vscode/
+.idea/
+*.tsbuildinfo
+.cache/
+docs/
+test-results/
+coverage/
+worklets/

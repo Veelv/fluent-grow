@@ -167,7 +167,6 @@ const styles = withFallbacks({
 - **SSR Compatible**: Server-side rendering support
 - **CDN Optimized**: Single file deployment
 
-
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
@@ -277,10 +276,10 @@ cleanup.push(
 // Later: cleanup.forEach(fn => fn());
 ```
 
-### Theming com escopo (light/dark) e RTL/LTR
+### Scoped Theming (light/dark) and RTL/LTR
 
 ```typescript
-// Theming com escopo via data-theme e tokens
+// Scoped theming via data-theme and tokens
 import { ThemeManager } from '@/core';
 import { setDirection } from '@/utils/dir';
 
@@ -309,37 +308,37 @@ theme.register({
   }
 });
 
-// Global claro
+// Global light theme
 theme.apply('light');
 
-// Escopo em container específico no modo dark
+// Scoped dark theme in a specific container
 const card = document.querySelector('.card') as HTMLElement;
 theme.applyScoped('dark', card);
 
-// Em CSS (constructable stylesheet/recipes), use:
+// In CSS (constructable stylesheet/recipes), use:
 // [data-theme="dark"] :host { /* overrides dark */ }
 ```
 
 ```typescript
-// Direção de layout (RTL/LTR)
+// Layout direction (RTL/LTR)
 import { setDirection, getDirection } from '@/utils/dir';
 
 // Global RTL
 setDirection(document, 'rtl');
 
-// Escopo LTR em um container
+// Scoped LTR in a container
 const sidebar = document.querySelector('.sidebar') as HTMLElement;
 setDirection(sidebar, 'ltr');
 
-console.log('dir global:', getDirection(document)); // rtl
-console.log('dir sidebar:', getDirection(sidebar)); // ltr
+console.log('Global direction:', getDirection(document)); // rtl
+console.log('Sidebar direction:', getDirection(sidebar)); // ltr
 ```
 
 ```typescript
-// Contrato de tokens: validação e migração
+// Token contracts: validation and migration
 import { validateTokens, registerMigration, migrateTokens } from '@/core';
 
-// Validação: faixas numéricas (ex.: leading entre 1 e 2)
+// Validation: number ranges (e.g.: leading between 1 and 2)
 const issues = validateTokens(
   {
     typography: { leading: { base: 2.4 } }
@@ -348,13 +347,13 @@ const issues = validateTokens(
 );
 console.log(issues); // [{ path: 'typography.leading.base', message: 'Value 2.4 > max 2' }]
 
-// Migração: renomeia tokens ou ajusta estruturas entre versões
+// Migration: rename tokens or adjust structures between versions
 registerMigration({
-  from: '0.1',
-  to: '0.1.0',
+  from: '0.1.1',
+  to: '0.1.1',
   migrate(tokens) {
     const next = { ...tokens };
-    // exemplo: mover colors.brand -> colors.accent
+    // example: move colors.brand -> colors.accent
     const brand = (next as any).colors?.brand;
     if (brand) {
       (next as any).colors = { ...(next as any).colors, accent: brand };

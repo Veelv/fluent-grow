@@ -1,19 +1,22 @@
 {
   "name": "fluent-grow",
-  "version": "0.1",
+  "version": "0.1.1",
   "description": "Zero-runtime CSS-in-TS framework leveraging Web Components and Houdini worklets",
   "type": "module",
   "main": "dist/main.js",
   "module": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "types": "dist/types/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "types": "./dist/main.d.ts"
+      "types": "./dist/types/main.d.ts"
+    },
+    "./jsx": {
+      "types": "./dist/types/jsx.d.ts"
     },
     "./*": {
       "import": "./dist/*.js",
-      "types": "./dist/*.d.ts"
+      "types": "./dist/types/*.d.ts"
     }
   },
   "files": [
@@ -44,8 +47,12 @@
     "performance-monitoring"
   ],
   "sideEffects": false,
-  "author": "Fluent Grow Team",
+  "author": "Veelv",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Veelv/fluent-grow"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -69,5 +76,8 @@
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3",
     "vite": "^7.2.2"
+  },
+  "dependencies": {
+    "fluent-grow": "^0.1.0"
   }
 }

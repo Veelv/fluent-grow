@@ -106,7 +106,7 @@ export * from './borders';
 export * from './css-complete';
 export * from './integrations';
 
-export const VERSION = '0.1';
+export const VERSION = '0.1.1';
 
 if (typeof window !== 'undefined') {
   // Progressive enhancement: attempt to load critical polyfills for broader support

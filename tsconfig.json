@@ -23,7 +23,7 @@
     "emitDeclarationOnly": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "dist",
+    "outDir": "dist/types",
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {
@@ -31,10 +31,12 @@
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/jsx.d.ts"
   ],
   "exclude": [
     "node_modules",

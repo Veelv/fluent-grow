@@ -5,7 +5,7 @@
  * within existing frontend frameworks and styling systems.
  * 
  * @module integrations
- * @version 0.1.0
+ * @version 0.1.1
  * @author Fluent Grow Team
  */
 

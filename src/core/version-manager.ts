@@ -23,7 +23,7 @@ export class VersionManager {
   constructor() {
     this.browserSupport = this.detectBrowserSupport();
     this.versionInfo = {
-      version: '0.1.0',
+      version: '0.1.1',
       buildDate: new Date().toISOString(),
       compatibility: this.determineCompatibilityLevel(),
       features: this.getAvailableFeatures()

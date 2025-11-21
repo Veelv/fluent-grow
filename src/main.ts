@@ -54,8 +54,6 @@ export * from './utils/debounce-throttle';
 export * from './utils/responsive';
 export * from './styles/recipes';
 
-// Advanced Features
-export * from './utilities/utility-engine';
 export * from './components/advanced-components';
 export * from './components/badge';
 export * from './components/tooltip';
@@ -99,30 +97,28 @@ export * from './themes/advanced-themes';
 
 // Complete CSS System
 export * from './effects';
-export * from './states';
-export * from './transforms';
-export * from './display';
-export * from './borders';
-export * from './css-complete';
-export * from './integrations';
 
-export const VERSION = '0.1.1';
+// JSX Types
+/// <reference path="./jsx.d.ts" />
 
-if (typeof window !== 'undefined') {
-  // Progressive enhancement: attempt to load critical polyfills for broader support
-  void (async () => {
-    try {
-      const { PolyfillManager } = await import('./core/polyfill-manager');
-      const disabled = Boolean((window as any).__FG_DISABLE_POLYFILLS__);
-      if (!disabled) {
-        const manager = new PolyfillManager();
-        await manager.loadRequiredPolyfills();
-      }
-    } catch {
-      // no-op: polyfills are best-effort
-    }
-  })();
-  console.info(`🚀 Fluent Grow Framework v${VERSION} - Complete CSS Edition initialised`);
-  console.info('✨ Features: Complete CSS System, Effects, States, Transforms, Borders, Display');
-  console.info('🎯 All CSS Properties: Shadows, Pseudo-elements, Filters, Gradients, Animations');
-}
+// Export type definitions for all modules
+export type {} from './animations';
+export type {} from './borders';
+export type {} from './colors';
+export type {} from './components';
+export type {} from './core';
+export type {} from './css-complete';
+export type {} from './display';
+export type {} from './effects';
+export type {} from './flex';
+export type {} from './grid';
+export type {} from './integrations';
+export type {} from './layout';
+export type {} from './responsive';
+export type {} from './states';
+export type {} from './styles';
+export type {} from './themes';
+export type {} from './transforms';
+export type {} from './typography';
+export type {} from './utilities';
+export type {} from './utils';

@@ -6,7 +6,7 @@ import { loadWorklets } from './worklet-loader';
 import type { ThemeDefinition } from './theme-manager';
 import { ThemeManager } from './theme-manager';
 import { ColorManager } from '../colors';
-import { registerFluentPalettes } from '../colors/presets';
+import { createFluentTheme } from '../colors/presets';
 import { VersionManager } from './version-manager';
 import { FeatureLayerManager } from './feature-layers';
 import { AnalyticsManager, type AnalyticsConfig } from './analytics';
@@ -38,11 +38,9 @@ export class FluentFramework {
   private polyfillManager = new PolyfillManager();
   private fallbackManager = new FeatureFallbackManager();
   private legacyManager = new LegacySupportManager();
-  private runtimeTokens: FrameworkTokens;
 
   constructor(config?: FrameworkConfig & { analytics?: AnalyticsConfig | boolean }) {
     this.config = resolveConfig(config);
-    this.runtimeTokens = { ...this.config.tokens };
     
     if (config?.analytics) {
       if (typeof config.analytics === 'object') {
@@ -80,10 +78,8 @@ export class FluentFramework {
     const startTime = performance.now();
     this.initialised = true;
 
-    // Load polyfills first (including legacy browser support) unless disabled
-    if (!this.config.disablePolyfills) {
-      await this.polyfillManager.loadRequiredPolyfills();
-    }
+    // Load polyfills first (including legacy browser support)
+    await this.polyfillManager.loadRequiredPolyfills();
     
     // Inject legacy browser support if needed
     if (this.legacyManager.isLegacyBrowser()) {
@@ -98,12 +94,46 @@ export class FluentFramework {
       // Register and apply default Fluent palettes to expose --fluent-color-*-* variables
       try {
         const colorManager = new ColorManager();
-        registerFluentPalettes(colorManager, true, 'fluent');
+        // Create and apply fluent theme to ensure CSS variables are set
+        const fluentTheme = createFluentTheme('fluent');
+        colorManager.registerTheme(fluentTheme);
+        colorManager.applyTheme('fluent');
       } catch (error) {
         if (typeof console !== 'undefined') {
           console.warn('[FluentFramework] Failed to register default color palettes', error);
         }
       }
+      
+      // Register default theme if no themes exist yet
+      if ((this.themeManager as any).themes?.size === 0) {
+        this.themeManager.register({
+          name: 'default',
+          tokens: {
+            colors: {
+              // These will be overridden by the color manager but defined as fallbacks
+            },
+            typography: {
+              fontFamily: {
+                body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+                heading: 'inherit'
+              }
+            },
+            spacing: {
+              xs: '0.25rem',
+              sm: '0.5rem',
+              md: '1rem',
+              lg: '1.5rem',
+              xl: '2rem'
+            }
+          }
+        });
+      }
+      
+      // Apply default theme if none is active
+      if (!this.themeManager.getActiveTheme()) {
+        this.themeManager.apply('default');
+      }
+      
       await Promise.all([
         this.registerConfiguredComponents(),
         loadWorklets(this.config.worklets.paint, 'paint'),
@@ -126,23 +156,13 @@ export class FluentFramework {
     if (typeof document === 'undefined') {
       return;
     }
-    this.runtimeTokens = tokens;
-    applyTokens(this.runtimeTokens);
+    applyTokens(tokens);
   }
 
   /** Merges new tokens into the existing graph and reapplies them. */
   updateTokens(partialTokens: FrameworkTokens): void {
-    this.runtimeTokens = mergeTokenGroups(this.runtimeTokens, partialTokens);
-    this.applyTokens(this.runtimeTokens);
-  }
-
-  getTokens(): FrameworkTokens {
-    return { ...this.runtimeTokens };
-  }
-
-  setTokens(tokens: FrameworkTokens): void {
-    this.runtimeTokens = { ...tokens };
-    this.applyTokens(this.runtimeTokens);
+    this.config.tokens = mergeTokenGroups(this.config.tokens, partialTokens);
+    this.applyTokens(this.config.tokens);
   }
 
   async registerComponents(...components: ComponentRegistration[]): Promise<void> {
@@ -229,4 +249,3 @@ export class FluentFramework {
     this.analyticsManager?.destroy();
   }
 }
-

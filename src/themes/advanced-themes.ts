@@ -1,155 +1,78 @@
-
-
-export interface AdvancedThemeConfig {
-  name: string;
-  colors: Record<string, string>;
-  typography: {
-    fontFamily: Record<string, string>;
-    fontSize: Record<string, string>;
-    fontWeight: Record<string, number>;
-  };
-  spacing: Record<string, string>;
-  borderRadius: Record<string, string>;
-  shadows: Record<string, string>;
-}
+import type { ThemeDefinition } from '../core/theme-manager'
+import { ColorManager } from '../colors'
+import { FLUENT_PALETTES, createFluentTheme } from '../colors/presets'
 
 export class AdvancedThemeManager {
-  private themes = new Map<string, AdvancedThemeConfig>();
+  private themes = new Map<string, ThemeDefinition>()
+  private colorManager = new ColorManager()
 
-  static readonly FLUENT_LIGHT: AdvancedThemeConfig = {
+  constructor() {
+    // Registrar as paletas fluent por padrão
+    Object.entries(FLUENT_PALETTES).forEach(([name, definition]) => {
+      this.colorManager.registerPalette(name, definition)
+    })
+  }
+
+  static readonly FLUENT_LIGHT: ThemeDefinition = {
     name: 'fluent-light',
-    colors: {
-      'primary-500': 'oklch(60% 0.15 240)',
-      'primary-600': 'oklch(50% 0.16 240)',
-      'neutral-100': 'oklch(95% 0.01 240)',
-      'neutral-900': 'oklch(10% 0.01 240)',
-      'success-500': 'oklch(65% 0.15 140)',
-      'warning-500': 'oklch(75% 0.15 60)',
-      'error-500': 'oklch(55% 0.20 20)'
-    },
-    typography: {
-      fontFamily: {
-        'ui': 'system-ui, -apple-system, sans-serif',
-        'display': 'Inter, system-ui, sans-serif',
-        'body': 'Inter, system-ui, sans-serif'
-      },
-      fontSize: {
-        'sm': 'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
-        'base': 'clamp(1rem, 0.9rem + 0.5vw, 1.125rem)',
-        'lg': 'clamp(1.125rem, 1rem + 0.625vw, 1.25rem)',
-        'xl': 'clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem)'
-      },
-      fontWeight: {
-        'normal': 400,
-        'medium': 500,
-        'semibold': 600,
-        'bold': 700
-      }
-    },
-    spacing: {
-      '1': '0.25rem',
-      '2': '0.5rem',
-      '4': '1rem',
-      '8': '2rem',
-      '16': '4rem'
-    },
-    borderRadius: {
-      'sm': '0.25rem',
-      'md': '0.5rem',
-      'lg': '0.75rem',
-      'xl': '1rem'
-    },
-    shadows: {
-      'sm': '0 1px 2px oklch(0% 0 0 / 0.05)',
-      'md': '0 4px 6px oklch(0% 0 0 / 0.07)',
-      'lg': '0 10px 15px oklch(0% 0 0 / 0.1)',
-      'xl': '0 20px 25px oklch(0% 0 0 / 0.1)'
+    tokens: {
+      // Usando os tokens já definidos no sistema
+      colors: {},
+      typography: {},
+      spacing: {},
+      shadows: {},
+      radii: {}
     }
-  };
+  }
 
-  static readonly FLUENT_DARK: AdvancedThemeConfig = {
+  static readonly FLUENT_DARK: ThemeDefinition = {
     name: 'fluent-dark',
-    colors: {
-      'primary-500': 'oklch(60% 0.15 240)',
-      'primary-600': 'oklch(70% 0.14 240)',
-      'neutral-100': 'oklch(15% 0.01 240)',
-      'neutral-900': 'oklch(95% 0.01 240)',
-      'success-500': 'oklch(70% 0.15 140)',
-      'warning-500': 'oklch(80% 0.15 60)',
-      'error-500': 'oklch(60% 0.20 20)'
-    },
-    typography: {
-      fontFamily: {
-        'ui': 'system-ui, -apple-system, sans-serif',
-        'display': 'Inter, system-ui, sans-serif',
-        'body': 'Inter, system-ui, sans-serif'
-      },
-      fontSize: {
-        'sm': 'clamp(0.875rem, 0.8rem + 0.375vw, 1rem)',
-        'base': 'clamp(1rem, 0.9rem + 0.5vw, 1.125rem)',
-        'lg': 'clamp(1.125rem, 1rem + 0.625vw, 1.25rem)',
-        'xl': 'clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem)'
-      },
-      fontWeight: {
-        'normal': 400,
-        'medium': 500,
-        'semibold': 600,
-        'bold': 700
-      }
-    },
-    spacing: {
-      '1': '0.25rem',
-      '2': '0.5rem',
-      '4': '1rem',
-      '8': '2rem',
-      '16': '4rem'
-    },
-    borderRadius: {
-      'sm': '0.25rem',
-      'md': '0.5rem',
-      'lg': '0.75rem',
-      'xl': '1rem'
-    },
-    shadows: {
-      'sm': '0 1px 2px oklch(0% 0 0 / 0.3)',
-      'md': '0 4px 6px oklch(0% 0 0 / 0.4)',
-      'lg': '0 10px 15px oklch(0% 0 0 / 0.5)',
-      'xl': '0 20px 25px oklch(0% 0 0 / 0.5)'
+    tokens: {
+      // Usando os tokens já definidos no sistema
+      colors: {},
+      typography: {},
+      spacing: {},
+      shadows: {},
+      radii: {}
     }
-  };
+  }
 
-  registerTheme(theme: AdvancedThemeConfig): this {
+  registerTheme(theme: ThemeDefinition): this {
     this.themes.set(theme.name, theme);
     return this;
   }
 
   applyTheme(name: string, root: HTMLElement = document.documentElement): void {
-    const theme = this.themes.get(name) || AdvancedThemeManager.FLUENT_LIGHT;
+    // Aplicar tema de cores usando o sistema existente
+    const themeName = name === 'fluent-dark' ? 'fluent-dark' : 'fluent-light';
+    const theme = createFluentTheme(themeName);
     
-    Object.entries(theme.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--fluent-color-${key}`, value);
-    });
-
-    Object.entries(theme.typography.fontFamily).forEach(([key, value]) => {
-      root.style.setProperty(`--fluent-font-family-${key}`, value);
-    });
-
-    Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
-      root.style.setProperty(`--fluent-font-size-${key}`, value);
-    });
-
-    Object.entries(theme.spacing).forEach(([key, value]) => {
-      root.style.setProperty(`--fluent-spacing-${key}`, value);
-    });
-
-    Object.entries(theme.shadows).forEach(([key, value]) => {
-      root.style.setProperty(`--fluent-shadow-${key}`, value);
-    });
+    // Registrar e aplicar o tema de cores
+    this.colorManager.registerTheme(theme);
+    this.colorManager.applyTheme(themeName, root);
+    
+    // Aplicar outros tokens do tema
+    const themeConfig = this.themes.get(name) || AdvancedThemeManager.FLUENT_LIGHT;
+    if (themeConfig.tokens) {
+      Object.entries(themeConfig.tokens).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          root.style.setProperty(`--fluent-${key}`, value);
+        } else if (typeof value === 'object') {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            if (typeof subValue === 'string' || typeof subValue === 'number') {
+              root.style.setProperty(`--fluent-${key}-${subKey}`, String(subValue));
+            }
+          });
+        }
+      });
+    }
 
     root.setAttribute('data-theme', name);
   }
 
   enableAutoTheme(): void {
+    if (typeof window === 'undefined') return;
+    
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
     const updateTheme = () => {
@@ -172,8 +95,33 @@ export class AdvancedThemeManager {
       root.style.removeProperty('transition');
     }, parseInt(duration));
   }
+  
+  /**
+   * Apply a default theme if none is currently applied
+   */
+  applyDefaultTheme(): void {
+    if (typeof document === 'undefined') return;
+    
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    
+    // Apply default theme only if no theme is currently applied
+    if (!currentTheme || !this.themes.has(currentTheme)) {
+      this.applyTheme('fluent-light');
+    }
+  }
 }
 
 export const advancedThemeManager = new AdvancedThemeManager();
+
+// Registrar os temas padrão
 advancedThemeManager.registerTheme(AdvancedThemeManager.FLUENT_LIGHT);
 advancedThemeManager.registerTheme(AdvancedThemeManager.FLUENT_DARK);
+
+// Apply default theme on module load to ensure components have styling
+if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+  // Small delay to ensure DOM is ready
+  setTimeout(() => {
+    advancedThemeManager.applyDefaultTheme();
+  }, 0);
+}

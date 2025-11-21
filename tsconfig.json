@@ -32,11 +32,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "typeRoots": ["node_modules/@types", "src"]
   },
   "include": [
     "src/**/*",
-    "src/jsx.d.ts"
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
